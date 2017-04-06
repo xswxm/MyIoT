@@ -25,7 +25,6 @@ class RandomValue:
         self.id = id
         self.title = title
         self.type = 'Value'
-        self.isThread = False
     def description(self):
         message = {}
         message['id'] = self.id

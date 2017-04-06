@@ -1,7 +1,7 @@
 # MyIoT
 
 What is myIoT:
-1. myIoT is a solution for home automation, it can be implemented on your Raspberry Pi. And it theoretically can enable you to control devices (include other embedded devices connected to the server) and acquire info of these devices. 
+1. myIoT is a solution for home automation, it can be implemented on your Raspberry Pi. It theoretically can enable you to control devices (include other embedded devices connected to the server) and acquire info of these devices. 
 2. It is currently based on python (sever part) and Android (Client)
 3. It can process HTTPS and Socketio requests.
 
@@ -21,7 +21,7 @@ Major Requirements for server part:
 Set up for server part:
 1. Generate certifications with OpenSSL
 2. Set up nginx for our server
-3. Open 'system.cfg' under the root of the server folder, modify devices if necessary. I have put some of my devices in it so you probably have to change the settings
+3. Open 'device.py' under the root of the server folder, modify devices if necessary. I have put some devices of mine so you probably have to modify this file
 4. Run our server by "python app.py"
 
 
@@ -33,9 +33,10 @@ Set up for client/app part:
 
 
 Explanation of 'system.cfg':
-1. The very first part named 'SYSTEM' is the section for server itself, other sections below is all for devices.
-2. For each section of devices, the title of the section is the name displayed on our client/app, and its items usually contains the ports the device used and the type of the device, which you want to display and control on your client/app. That is, if you want the device to be a Switch on your app, then named its 'type' to be Switch
+1. The very first part named 'DEFUALT' is the section for server itself.
 
+Explanation of the 'device.py'
+1. You have to modify this file as the devices/sensors I have are not the same as yours, so rmove them as necessary
 
 Port forwarding:
 1. You can config your router to open certain ports for the server and it can be accessed over the Internet.

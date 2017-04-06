@@ -15,10 +15,10 @@ def WriteCfgDefault():
     if os.path.exists(syscfg):
         os.remove(syscfg)
     config = ConfigParser.RawConfigParser()
-    config.add_section('SYSTEM')
-    config.set('SYSTEM', 'username', 'username')
-    config.set('SYSTEM', 'password', 'password')
-    config.set('SYSTEM', 'syncInterval', '600')
+    config.add_section('DEFAULT')
+    config.set('DEFAULT', 'username', 'username')
+    config.set('DEFAULT', 'password', 'password')
+    config.set('DEFAULT', 'syncInterval', '600')
     with open(syscfg, 'wb') as configfile:
         config.write(configfile)
 
@@ -44,23 +44,3 @@ def WriteCfg(section, option, value):
     except Exception as e:
         logging.debug(e)
         return False
-
-def ReadDevices():
-    try:
-        devices = []
-        if not os.path.exists(syscfg):
-            WriteCfgDefault()
-            return devices
-        config = ConfigParser.RawConfigParser()
-        config.read(syscfg)
-        titles = config.sections()
-        for i in xrange(1, len(titles)):
-            title = titles[i]
-            device = {'title': title}
-            myItems = config.items(title)
-            for i in xrange(len(myItems)):
-                device[myItems[i][0]] = myItems[i][1]
-            devices.append(device)
-        return devices
-    except Exception as e:
-        logging.debug(e)
