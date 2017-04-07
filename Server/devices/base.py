@@ -16,11 +16,13 @@ class BaseButton:
         message['id'] = self.id
         message['title'] = self.title
         message['type'] = self.type
-        if (GPIO.input(self.port) == '1'):
-            message['value'] = True
-        else:
-            message['value'] = False
+        message['value'] = self.getValue()
         return message
+    def getValue(self):
+        if (GPIO.input(self.port) == 1):
+            return True
+        else:
+            return False
     def setValue(self, value):
         GPIO.output(self.port, value)
         return value
@@ -37,11 +39,13 @@ class BaseSwitch:
         message['id'] = self.id
         message['title'] = self.title
         message['type'] = self.type
-        if (GPIO.input(self.port) == '1'):
-            message['value'] = True
-        else:
-            message['value'] = False
+        message['value'] = self.getValue()
         return message
+    def getValue(self):
+        if (GPIO.input(self.port) == 1):
+            return True
+        else:
+            return False
     def setValue(self, value):
         GPIO.output(self.port, value)
         return value
