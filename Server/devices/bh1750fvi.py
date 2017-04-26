@@ -16,6 +16,7 @@ class BH1750FVI:
         message = {}
         message['id'] = self.id
         message['title'] = self.title
+        message['port'] = self.port
         message['category'] = self.category
         message['value'] = self.getValue()
         message['accessible'] = self.accessible

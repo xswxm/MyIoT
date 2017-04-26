@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
-import RPi.GPIO as GPIO
-
 # Debug
 import logging, sys
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
@@ -24,14 +22,14 @@ from devices.basic import BasicButton, BasicSwitch, PWMSignal, SOSLight, BreathL
 from devices.bh1750fvi import BH1750FVI
 from devices.dh11 import DH11Temp, DH11Humidity
 
-# Initialize GPIO
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
 # Initialize devices
 devices = []
 
 import sqlite3
+
+# sqlite3 encode
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 # Annotation 
 # id, module, title, port, value, mac, type used here are just for their names but not the real id or module...
@@ -53,6 +51,7 @@ def getDevices():
 def getDevicesSQL():
     global devices
     conn = sqlite3.connect(dbPath)
+    conn.text_factory = str
     logging.debug("Opened database successfully")
     cursor = conn.execute("SELECT ID, CLASSNAME, TITLE, PORT, CATEGORY from DEVICES")
     for row in cursor:
@@ -103,6 +102,7 @@ def addDevice(id, className, title, port, category):
 
 def addDeviceSQL(id, calssName, title, port, category):
     conn = sqlite3.connect(dbPath)
+    conn.text_factory = str
     logging.debug("Opened database successfully")
     # conn.execute("INSERT INTO DEVICES (ID,TITLE,PORT,VALUE,TYPE) VALUES (1000, 'Demo Switch', '23', 'False', 'BasicSwitch')");
     commend = "INSERT INTO DEVICES (ID, CLASSNAME, TITLE, PORT, CATEGORY) VALUES ("
@@ -117,7 +117,7 @@ def addDeviceSQL(id, calssName, title, port, category):
     conn.close()
 
 def removeDevice(device):
-    removeDeviceSQL(device.ID)
+    removeDeviceSQL(device.id)
 
 def removeDeviceSQL(id):
     conn = sqlite3.connect(dbPath)
@@ -127,18 +127,19 @@ def removeDeviceSQL(id):
     logging.debug("Record deleted successfully")
     conn.close()
 
-def updateDevice(device):
+def configureDevice(device):
     id = device.id
     title = device.title
-    classFullName = str(device.__class__).split('.')
+    classFullName = str(device.__class__).replace('\'>', '').split('.')
     calssName = classFullName[len(classFullName) - 1]
     title = device.title
     port = (hasattr(device, 'port')) and device.port or None
     category = (hasattr(device, 'category')) and device.category or None
-    updateDeviceSQL(id, calssName, title, port, category)
+    configureDeviceSQL(id, calssName, title, port, category)
 
-def updateDeviceSQL(id, calssName, title, port, category):
+def configureDeviceSQL(id, calssName, title, port, category):
     conn = sqlite3.connect(dbPath)
+    conn.text_factory = str
     logging.debug("Opened database successfully")
     commend = "UPDATE DEVICES set "
     commend += "CLASSNAME='" + str(calssName) + "',"
@@ -158,9 +159,33 @@ def renewDevice(device):
     id = device.id
     title = device.title
     classFullName = str(device.__class__).replace('\'>', '').split('.')
-    print classFullName
     className = classFullName[len(classFullName) - 1]
     classObj = eval(className)
-    return PWMSignal(device.id, device.title, device.port)
+    return classObj(device.id, device.title, device.port)
+
+# Get all avaliable classes and return them as a dictionary
+def getClassNameList():
+    classNameList = []
+    className = {'classname':'RandomValue', 'port':'False'}
+    classNameList.append(className)
+    className = {'classname':'CPUTemp', 'port':'False'}
+    classNameList.append(className)
+    className = {'classname':'BasicButton', 'port':'True'}
+    classNameList.append(className)
+    className = {'classname':'BasicSwitch', 'port':'True'}
+    classNameList.append(className)
+    className = {'classname':'PWMSignal', 'port':'True'}
+    classNameList.append(className)
+    className = {'classname':'SOSLight', 'port':'True'}
+    classNameList.append(className)
+    className = {'classname':'BreathLight', 'port':'True'}
+    classNameList.append(className)
+    className = {'classname':'BH1750FVI', 'port':'True'}
+    classNameList.append(className)
+    className = {'classname':'DH11Temp', 'port':'True'}
+    classNameList.append(className)
+    className = {'classname':'DH11Humidity', 'port':'True'}
+    classNameList.append(className)
+    return {'classnamelist':classNameList}
 
 sqlTableInit()

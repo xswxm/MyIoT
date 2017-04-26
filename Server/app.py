@@ -83,42 +83,9 @@ def getAllDevices():
             message = devices[i].description()
             logging.debug(message)
             emit('add', message)
+        emit('adddone', {})
     except Exception as e:
         logging.debug(e)
-
-
-# Add a device and send its info to all clients
-# Current: it only works for adding devives connected to our Pi
-@socketio.on('add', namespace = mynamespace)
-def addDevice(message):
-    try:
-        global devices
-        deviceTitle = message['title']
-        devicePort = (message.has_key('port')) and message['port'] or None
-        # devicePort = message['port']
-        for i in range(len(devices)):
-            if 'port' in dir(devices[i]):
-                if devices[i].port == devicePort:
-                    # renew device
-                    devices[i].title = deviceTitle
-                    devices[i].port = devicePort
-                    Device.updateDevice(devices[i])
-                    emit('set', devices[i].description(), broadcast = True)
-                    return
-        # add device
-        deviceID = devices[len(devices) - 1].id + 1
-        message['id'] = deviceID
-        deviceClassName = message['className']
-        deviceCategory = (message.has_key('category')) and message['category'] or None
-        device = Device.addDevice(deviceID, deviceClassName, deviceTitle, devicePort, deviceCategory)
-        devices.append(device)
-        message = device.description()
-        emit('add', message, broadcast = True)
-        # Use id as the room No.
-        # join_room(deviceID)
-    except Exception as e:
-        logging.debug(e)
-
 
 # Get the info of one specific device and sent back to the client
 @socketio.on('get', namespace = mynamespace)
@@ -170,6 +137,84 @@ def setDevice(message):
         logging.debug(e)
 
 
+# Add a device and send its info to all clients
+# Current: it only works for adding devives connected to our Pi
+@socketio.on('add', namespace = mynamespace)
+def addDevice(message):
+    try:
+        global devices
+        deviceTitle = message['title']
+        devicePort = (message.has_key('port')) and message['port'] or None
+        # devicePort = message['port']
+        # for i in range(len(devices)):
+        #     if 'port' in dir(devices[i]):
+        #         if devices[i].port == devicePort:
+        #             # renew device
+        #             devices[i].title = deviceTitle
+        #             devices[i].port = devicePort
+        #             Device.updateDevice(devices[i])
+        #             emit('set', devices[i].description(), broadcast = True)
+        #             return
+        # add device
+        deviceID = devices[len(devices) - 1].id + 1
+        message['id'] = deviceID
+        deviceClassName = message['classname']
+        deviceCategory = (message.has_key('category')) and message['category'] or None
+        device = Device.addDevice(deviceID, deviceClassName, deviceTitle, devicePort, deviceCategory)
+        devices.append(device)
+        message = device.description()
+        emit('add', message, broadcast = True)
+        # Use id as the room No.
+        # join_room(deviceID)
+    except Exception as e:
+        logging.debug(e)
+
+# Remove a device and notify all clients
+@socketio.on('remove', namespace = mynamespace)
+def removeDevice(message):
+    try:
+        deviceID = message['id']
+        global devices
+        for i in range(len(devices)):
+            if devices[i].id == deviceID:
+                Device.removeDevice(devices[i])  # Remove device from database
+                devices.remove(devices[i])  # Remove device from devices list
+                emit('remove', message, broadcast = True)
+                break
+    except Exception as e:
+        logging.debug(e)
+
+# Configure a device, including its port and title, and notify all clients
+# this part may need further development, such as adding schedule
+@socketio.on('configure', namespace = mynamespace)
+def configureDevice(message):
+    try:
+        deviceID = message['id']
+        global devices
+        for i in range(len(devices)):
+            if devices[i].id == deviceID:
+                # Configure device from devices list
+                if message.has_key('port'):
+                    devices[i].port = message['port']
+                devices[i].title = message['title']
+                # Configure device from database
+                Device.configureDevice(devices[i])
+                # Broadcast the changes of the device
+                message.pop('port', None)  # Remove key 'port' from message
+                message['category'] = devices[i].category
+                emit('configure', message, broadcast = True)
+                break
+    except Exception as e:
+        logging.debug(e)
+
+
+@socketio.on('getclassnamelist', namespace = mynamespace)
+def getClassNameList():
+    try:
+        emit('setClassNameList', Device.getClassNameList())
+    except Exception as e:
+        logging.debug(e)
+
 # Connect to client and run the background thread
 @socketio.on('connect', namespace = mynamespace)
 def connect():
@@ -219,19 +264,6 @@ def test_disconnect():
     disconnect()
     print('Client disconnected: ', request.sid)
 
-
-# @app.route('/')
-# def index():
-#     return render_template('index.html', async_mode=socketio.async_mode)
-
-
-# @socketio.on('request', namespace = mynamespace)
-# def broadcast_message(message):
-#     message = {'data': {'message': 'I am the message'}}
-#     emit('response',
-#          {'data': message['data']['message']},
-#          broadcast=True)
-
 import uuid
 tokens = []
 # tokens.append("d1e90ebd-cbbf-46b8-b77d-de25ceca7a20")
@@ -249,20 +281,6 @@ def login():
             return token
         else:
             return '401'
-
-
-# @app.route('/login', methods=['GET'])
-# def loginx():
-#     username = request.args.get('username')
-#     password = request.args.get('password')
-#     if (username == Config.ReadCfg('DEFAULT', 'username') and password == Config.ReadCfg('DEFAULT', 'password')):
-#         # Generate a token, add it to tokens and sent it to the client
-#         global tokens
-#         token = str(uuid.uuid4())
-#         tokens.append(token)
-#         return token
-#     else:
-#         return '401'
 
 from flask import send_file
 #Handle a POST requst here to verify username and password and then return our avatar
@@ -295,79 +313,6 @@ def configuration():
             return '200'
         else:
             return '401'
-
-
-# #Handle a POST requst from exteral devices
-# @app.route('/add', methods=['POST'])
-# def configuration():
-#     try:
-#         if ('token' in request.form):
-#             token = request.form['token']
-#             global tokens
-#             if (token in tokens):
-#                 deviceTitle = request.form['title']
-#                 deviceType = request.form['type']
-#                 deviceValue = request.form['value']
-#                 idExt += 1
-
-#                 global devices
-#                 devices.append(Device(deviceTitle, deviceType, deviceValue, idExt))
-#                 message = {}
-#                 message['title'] = deviceTitle
-#                 message['type'] = deviceType
-#                 message['value'] = deviceValue
-#                 message['id'] = idExt
-#                 emit('add', message, broadcast = True)
-#                 return str(idExt)
-#             else:
-#                 return '401'
-#         else:
-#             return '404'
-#     except Exception as e:
-#         logging.debug()
-#         return '404'
-
-# #Handle a POST requst here to write configurations
-# @app.route('/set', methods=['POST'])
-# def configuration():
-#     try:
-#         if ('token' in request.form):
-#             token = request.form['token']
-#             global tokens
-#             if (token in tokens):
-#                 deviceTitle = request.form['title']
-#                 deviceType = request.form['type']
-#                 deviceValue = request.form['value']
-#                 deviceID = int(request.form['id'])
-#                 idExt += 1
-
-#                 global devices
-#                 for i in xrange(len(devices)):
-#                     if (devices[i].id == deviceID):
-#                         if ((devices[i].title != deviceTitle) and (devices[i].value != deviceValue)):
-#                             devices[i].title = deviceTitle
-#                             devices[i].value = deviceValue
-#                             emit('set', devices[i].description(), broadcast = True)
-#                 return '200'
-#             else:
-#                 return '401'
-#         else:
-#             return '404'
-#     except Exception as e:
-#         logging.debug()
-#         return '404'
-
-
-# from flask import Response
-# @app.route("/ogg", methods=['POST'])
-# def streamogg():
-#     def generate():
-#         with open("song.ogg", "rb") as fogg:
-#             data = fogg.read(1024)
-#             while data:
-#                 yield data
-#                 data = fogg.read(1024)
-#     return Response(generate(), mimetype="audio/ogg")
 
 
 if __name__ == '__main__':

@@ -17,6 +17,7 @@ class DH11Temp:
         message = {}
         message['id'] = self.id
         message['title'] = self.title
+        message['port'] = self.port
         message['category'] = self.category
         message['value'] = self.getValue()
         message['accessible'] = self.accessible
@@ -37,6 +38,7 @@ class DH11Humidity:
         message = {}
         message['id'] = self.id
         message['title'] = self.title
+        message['port'] = self.port
         message['category'] = self.category
         message['value'] = self.getValue()
         message['accessible'] = self.accessible

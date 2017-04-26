@@ -1,0 +1,75 @@
+<resources>
+    <string name="app_name">MyIoT</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Add Local Device -->
+    <string name="title_activity_add_local_device">Add Local Device</string>
+    <string name="btn_add_local_device">Add</string>
+    <string name="txv_device_classname">Device type:</string>
+
+    <!-- Strings related to Configure Local Device -->
+    <string name="title_activity_configure_local_device">Configure Local Device</string>
+    <string name="btn_configure_local_device">Configure</string>
+
+    <!-- Strings related to General -->
+    <string name="edt_device_title">Title</string>
+    <string name="edt_device_port">Port/Address</string>
+    <string name="notify_empty_device_title">Title cannot be empty!</string>
+    <string name="notify_empty_device_port">Port/Address cannot be empty!</string>
+
+    <!-- Strings related to Controller -->
+    <string name="btn_controller_configure">Configure</string>
+    <string name="btn_controller_remove">Remove</string>
+
+    <!-- Strings related to Drawer -->
+    <string name="nav_login">Sign in</string>
+    <string name="nav_login_ing">Sign in…</string>
+    <string name="nav_logout">Sign out</string>
+    <string name="nav_refresh">Refresh</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_add_device">Add device</string>
+    <string name="nav_update_cert">Update certification</string>
+    <string name="nav_preference">Preference</string>\
+    <string name="nav_about">About</string>
+
+    <!-- Strings related to scan certification -->
+    <string name="qr_cert_scanning">Scanning certification</string>
+    <string name="qr_cert_scan_successfully">Certification updated successfully!</string>
+    <string name="qr_cert_scan_cancelled">Scan cancelled!</string>
+
+    <!-- Strings related to Authorization -->
+    <string name="notify_logout_successfully">Sign out successfully!</string>
+    <string name="notify_authorization_failed">Authorization failed!</string>
+    <string name="notify_connection_failed">Connection failed, please check your url and certification!</string>
+    <string name="notify_login">Please sign in first!</string>
+    <string name="notify_login_successfully">Sign in successfully!</string>
+    <string name="notify_config_successfully">Upload configurations successfully!</string>
+    <string name="notify_config_authorization_failed">Authorization failed, please sign in first!</string>
+
+    <!-- Strings related to Preference Settings -->
+    <string name="pref_title_auto_login">Enable auto login</string>
+    <string name="pref_description_auto_login">Login automatically when starting the app.</string>
+    <string name="pref_title_username">Username</string>
+    <string name="pref_title_password">Password</string>
+    <string name="pref_title_address">URL</string>
+    <string name="pref_title_sync_interval">Synchronization interval (Seconds)</string>
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+</resources>
