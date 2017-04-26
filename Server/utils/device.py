@@ -21,6 +21,7 @@ from devices.system import CPUTemp
 from devices.basic import BasicButton, BasicSwitch, PWMSignal, SOSLight, BreathLight
 from devices.bh1750fvi import BH1750FVI
 from devices.dh11 import DH11Temp, DH11Humidity
+from devices.others import AUD2RMB
 
 # Initialize devices
 devices = []
@@ -185,6 +186,8 @@ def getClassNameList():
     className = {'classname':'DH11Temp', 'port':'True'}
     classNameList.append(className)
     className = {'classname':'DH11Humidity', 'port':'True'}
+    classNameList.append(className)
+    className = {'classname':'AUD2RMB', 'port':'False'}
     classNameList.append(className)
     return {'classnamelist':classNameList}
 
