@@ -101,14 +101,14 @@ def addDevice(id, className, title, port, category):
     addDeviceSQL(id, className, title, port, category)
     return device
 
-def addDeviceSQL(id, calssName, title, port, category):
+def addDeviceSQL(id, className, title, port, category):
     conn = sqlite3.connect(dbPath)
     conn.text_factory = str
     logging.debug("Opened database successfully")
     # conn.execute("INSERT INTO DEVICES (ID,TITLE,PORT,VALUE,TYPE) VALUES (1000, 'Demo Switch', '23', 'False', 'BasicSwitch')");
     commend = "INSERT INTO DEVICES (ID, CLASSNAME, TITLE, PORT, CATEGORY) VALUES ("
     commend += str(id) + ","
-    commend += "'" + str(calssName) + "',"
+    commend += "'" + str(className) + "',"
     commend += "'" + str(title) + "',"
     commend += (port == None) and "NULL," or str(port) + ","
     commend += (category == None) and "NULL)" or "'" + str(category) + "')"
@@ -127,6 +127,19 @@ def removeDeviceSQL(id):
     conn.commit()
     logging.debug("Record deleted successfully")
     conn.close()
+
+def updateDevice(id, className, title, port, category):
+    classObj = eval(className)
+    if port == None:
+        device = classObj(id, title)
+    else:
+        device = classObj(id, title, port)
+    if category == None:
+        category = device.category
+    else:
+        device.category = category
+    configureDeviceSQL(id, className, title, port, category)
+    return device
 
 def configureDevice(device):
     id = device.id

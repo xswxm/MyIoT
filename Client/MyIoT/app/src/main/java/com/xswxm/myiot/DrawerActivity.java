@@ -865,10 +865,10 @@ public class DrawerActivity extends AppCompatActivity
                                 default:
                                     break;
                             }
-                            Log.e(TAG_Socket, "setDevices succeed!");
+                            Log.e(TAG_Socket, "onAddDevice succeed!");
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Log.e(TAG_Socket, "setDevices failed!");
+                            Log.e(TAG_Socket, "onAddDevice failed!");
                         }
                     }
                 }

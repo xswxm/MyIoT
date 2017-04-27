@@ -138,34 +138,37 @@ def setDevice(message):
 
 
 # Add a device and send its info to all clients
-# Current: it only works for adding devives connected to our Pi
+# Current: no accessable funtion
 @socketio.on('add', namespace = mynamespace)
 def addDevice(message):
     try:
         global devices
+        deviceClassName = message['classname']
         deviceTitle = message['title']
-        devicePort = (message.has_key('port')) and message['port'] or None
-        # devicePort = message['port']
-        # for i in range(len(devices)):
-        #     if 'port' in dir(devices[i]):
-        #         if devices[i].port == devicePort:
-        #             # renew device
-        #             devices[i].title = deviceTitle
-        #             devices[i].port = devicePort
-        #             Device.updateDevice(devices[i])
-        #             emit('set', devices[i].description(), broadcast = True)
-        #             return
-        # add device
+        devicePort = None
+        deviceCategory = (message.has_key('category')) and message['category'] or None
+        # if port is larger than 5000, then it is an remote device,
+        # we should create an room based on its sid
+        # if port is allready used, then update the device and make it accessable
+        if message.has_key('port'):
+            devicePort = message['port']
+            for i in range(len(devices)):
+                if 'port' in dir(devices[i]):
+                    if devicePort > 5000:
+                        join_room(request.sid)
+                    if devices[i].port == devicePort:
+                        # update device
+                        deviceID = devices[i].id
+                        devices[i] = Device.updateDevice(deviceID, deviceClassName, deviceTitle, devicePort, deviceCategory)
+                        emit('remove', {'id':deviceID}, broadcast = True)
+                        emit('add', devices[i].description(), broadcast = True)
+                        return
+        # add device as usual
         deviceID = devices[len(devices) - 1].id + 1
         message['id'] = deviceID
-        deviceClassName = message['classname']
-        deviceCategory = (message.has_key('category')) and message['category'] or None
         device = Device.addDevice(deviceID, deviceClassName, deviceTitle, devicePort, deviceCategory)
         devices.append(device)
-        message = device.description()
-        emit('add', message, broadcast = True)
-        # Use id as the room No.
-        # join_room(deviceID)
+        emit('add', device.description(), broadcast = True)
     except Exception as e:
         logging.debug(e)
 
@@ -231,29 +234,15 @@ def connect():
 
 
 # Disconnect the client and remove device if it has one
+# Current: no accessable funtion
 @socketio.on('disconnect', namespace = mynamespace)
 def test_disconnect():
-    # Close room if exist, then remove the device added previous
+    # here we have to use the sid to locate the the disconnected device
+    # and if it exists, remove its room and set it as unaceessable
     try:
-        deviceID = request.id
-        close_room(deviceID)
-        # Remove device
-        global devices
-        for i in xrange(len(devices)):
-            try:
-                if (devices[i].id == deviceID):
-                    message = {}
-                    message['id'] = devices[i].id
-                    # Sent message to announce all clients to remove the device
-                    emit('remove', message, broadcast = True)
-                    # Remove device from the devices list
-                    # devices.remove(devices[i])
-                    del devices[i]
-                    break
-            except Exception as e:
-                pass
+        close_room(request.sid)
     except Exception as e:
-        logging.debug()
+        logging.debug(e)
 
     # Remove token if exist
     global tokens
@@ -261,7 +250,7 @@ def test_disconnect():
     if token in tokens:
         tokens.remove(token)
         logging.debug("Token removed:" + token)
-    disconnect()
+    # disconnect()
     print('Client disconnected: ', request.sid)
 
 import uuid
@@ -313,7 +302,6 @@ def configuration():
             return '200'
         else:
             return '401'
-
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, 
