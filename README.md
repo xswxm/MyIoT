@@ -12,12 +12,16 @@ Theory：
 4. Once the Client is disconnected, the Server will remove the token
 
 
-Major Requirements for server part:
+Dependencies - server:
 1. flask
 2. flask_socketio
 3. eventlet
 4. OpenSSL
 5. pigpio
+
+Dependencies - client:
+1. zxing: https://github.com/zxing/zxing
+2. SwipeDelMenuLayout: https://github.com/mcxtzhang/SwipeDelMenuLayout
 
 Set up for server part:
 1. Generate certifications with OpenSSL
