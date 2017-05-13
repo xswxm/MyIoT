@@ -21,7 +21,7 @@ class PWMSignal(threading.Thread):
         self.feasible = feasible
         self.category = 'SeekBar'
     def run(self):
-        pwm_rate_curr = 0
+        pwm_rate_curr = self.pi.get_PWM_dutycycle(self.port)
         pwm_rate_new = self.value
         while not self._stopevent.isSet():
             pwm_rate_new = int(self.value)
@@ -161,5 +161,5 @@ class BreathLight(threading.Thread):
                 self.start()
                 self.title = self.title
             else:
-                self.join(0.1)
+                self.join()
         return value
