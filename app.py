@@ -127,8 +127,18 @@ def setDevice(message):
                     except:
                         pass
                     deviceValue = message['value']
+                    # import time
+                    # timeNow = time.time()
+                    # print 0
                     devices[i].setValue(deviceValue)
+                    # timePrev = timeNow
+                    # timeNow = time.time()
+                    # print timeNow - timePrev
                     emit('set', devices[i].description(), broadcast=True)
+                    # timePrev = timeNow
+                    # timeNow = time.time()
+                    # print timeNow - timePrev
+
                 else:
                     emit('set', message, room = devices[i].id)
                     # request.namespace.emit('message', "somthing here")
@@ -253,6 +263,19 @@ def test_disconnect():
     # disconnect()
     print('Client disconnected: ', request.sid)
 
+
+# @app.route('/')
+# def index():
+#     return render_template('index.html', async_mode=socketio.async_mode)
+
+
+# @socketio.on('request', namespace = mynamespace)
+# def broadcast_message(message):
+#     message = {'data': {'message': 'I am the message'}}
+#     emit('response',
+#          {'data': message['data']['message']},
+#          broadcast=True)
+
 import uuid
 tokens = []
 # tokens.append("d1e90ebd-cbbf-46b8-b77d-de25ceca7a20")
@@ -270,6 +293,20 @@ def login():
             return token
         else:
             return '401'
+
+
+# @app.route('/login', methods=['GET'])
+# def loginx():
+#     username = request.args.get('username')
+#     password = request.args.get('password')
+#     if (username == Config.ReadCfg('DEFAULT', 'username') and password == Config.ReadCfg('DEFAULT', 'password')):
+#         # Generate a token, add it to tokens and sent it to the client
+#         global tokens
+#         token = str(uuid.uuid4())
+#         tokens.append(token)
+#         return token
+#     else:
+#         return '401'
 
 from flask import send_file
 #Handle a POST requst here to verify username and password and then return our avatar
@@ -302,6 +339,80 @@ def configuration():
             return '200'
         else:
             return '401'
+
+
+# #Handle a POST requst from exteral devices
+# @app.route('/add', methods=['POST'])
+# def configuration():
+#     try:
+#         if ('token' in request.form):
+#             token = request.form['token']
+#             global tokens
+#             if (token in tokens):
+#                 deviceTitle = request.form['title']
+#                 deviceType = request.form['type']
+#                 deviceValue = request.form['value']
+#                 idExt += 1
+
+#                 global devices
+#                 devices.append(Device(deviceTitle, deviceType, deviceValue, idExt))
+#                 message = {}
+#                 message['title'] = deviceTitle
+#                 message['type'] = deviceType
+#                 message['value'] = deviceValue
+#                 message['id'] = idExt
+#                 emit('add', message, broadcast = True)
+#                 return str(idExt)
+#             else:
+#                 return '401'
+#         else:
+#             return '404'
+#     except Exception as e:
+#         logging.debug()
+#         return '404'
+
+# #Handle a POST requst here to write configurations
+# @app.route('/set', methods=['POST'])
+# def configuration():
+#     try:
+#         if ('token' in request.form):
+#             token = request.form['token']
+#             global tokens
+#             if (token in tokens):
+#                 deviceTitle = request.form['title']
+#                 deviceType = request.form['type']
+#                 deviceValue = request.form['value']
+#                 deviceID = int(request.form['id'])
+#                 idExt += 1
+
+#                 global devices
+#                 for i in xrange(len(devices)):
+#                     if (devices[i].id == deviceID):
+#                         if ((devices[i].title != deviceTitle) and (devices[i].value != deviceValue)):
+#                             devices[i].title = deviceTitle
+#                             devices[i].value = deviceValue
+#                             emit('set', devices[i].description(), broadcast = True)
+#                 return '200'
+#             else:
+#                 return '401'
+#         else:
+#             return '404'
+#     except Exception as e:
+#         logging.debug()
+#         return '404'
+
+
+# from flask import Response
+# @app.route("/ogg", methods=['POST'])
+# def streamogg():
+#     def generate():
+#         with open("song.ogg", "rb") as fogg:
+#             data = fogg.read(1024)
+#             while data:
+#                 yield data
+#                 data = fogg.read(1024)
+#     return Response(generate(), mimetype="audio/ogg")
+
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, 

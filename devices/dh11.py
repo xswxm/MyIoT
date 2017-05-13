@@ -7,11 +7,11 @@ import sensors.dh11
 _dh11Lock = threading.RLock()
 class DH11Temp:
     global _dh11Lock
-    def __init__(self, id, title, port, accessible = True):
+    def __init__(self, id, title, port, feasible = True):
         self.id = id
         self.title = title
         self.port = port
-        self.accessible = accessible
+        self.feasible = feasible
         self.category = 'Value'
     def description(self):
         message = {}
@@ -20,7 +20,7 @@ class DH11Temp:
         message['port'] = self.port
         message['category'] = self.category
         message['value'] = self.getValue()
-        message['accessible'] = self.accessible
+        message['feasible'] = self.feasible
         return message
     def getValue(self):
         with _dh11Lock:
@@ -28,11 +28,11 @@ class DH11Temp:
 
 class DH11Humidity:
     global _dh11Lock
-    def __init__(self, id, title, port, accessible = True):
+    def __init__(self, id, title, port, feasible = True):
         self.id = id
         self.title = title
         self.port = port
-        self.accessible = accessible
+        self.feasible = feasible
         self.category = 'Value'
     def description(self):
         message = {}
@@ -41,7 +41,7 @@ class DH11Humidity:
         message['port'] = self.port
         message['category'] = self.category
         message['value'] = self.getValue()
-        message['accessible'] = self.accessible
+        message['feasible'] = self.feasible
         return message
     def getValue(self):
         with _dh11Lock:

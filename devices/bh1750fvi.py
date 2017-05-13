@@ -6,11 +6,11 @@ import sensors.bh1750fvi
 
 class BH1750FVI:
     _lock = threading.RLock()
-    def __init__(self, id, title, port, accessible = True):
+    def __init__(self, id, title, port, feasible = True):
         self.id = id
         self.title = title
         self.port = port
-        self.accessible = accessible
+        self.feasible = feasible
         self.category = 'Value'
     def description(self):
         message = {}
@@ -19,7 +19,7 @@ class BH1750FVI:
         message['port'] = self.port
         message['category'] = self.category
         message['value'] = self.getValue()
-        message['accessible'] = self.accessible
+        message['feasible'] = self.feasible
         return message
     def getValue(self):
         with BH1750FVI._lock:

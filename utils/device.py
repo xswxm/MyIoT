@@ -17,8 +17,9 @@ sys.path.append("..")
 
 # Modules for devices
 from devices.general import Device, RandomValue
-from devices.system import CPUTemp
-from devices.basic import BasicButton, BasicSwitch, PWMSignal, SOSLight, BreathLight
+from devices.system import CPUTemp, MemUse
+from devices.basic import Button, Switch
+from devices.advanced import PWMSignal, SOSLight, BreathLight
 from devices.bh1750fvi import BH1750FVI
 from devices.dh11 import DH11Temp, DH11Humidity
 from devices.others import AUD2RMB
@@ -105,7 +106,7 @@ def addDeviceSQL(id, className, title, port, category):
     conn = sqlite3.connect(dbPath)
     conn.text_factory = str
     logging.debug("Opened database successfully")
-    # conn.execute("INSERT INTO DEVICES (ID,TITLE,PORT,VALUE,TYPE) VALUES (1000, 'Demo Switch', '23', 'False', 'BasicSwitch')");
+    # conn.execute("INSERT INTO DEVICES (ID,TITLE,PORT,VALUE,TYPE) VALUES (1000, 'Demo Switch', '23', 'False', 'Switch')");
     commend = "INSERT INTO DEVICES (ID, CLASSNAME, TITLE, PORT, CATEGORY) VALUES ("
     commend += str(id) + ","
     commend += "'" + str(className) + "',"
@@ -184,9 +185,11 @@ def getClassNameList():
     classNameList.append(className)
     className = {'classname':'CPUTemp', 'port':'False'}
     classNameList.append(className)
-    className = {'classname':'BasicButton', 'port':'True'}
+    className = {'classname':'MemUse', 'port':'False'}
     classNameList.append(className)
-    className = {'classname':'BasicSwitch', 'port':'True'}
+    className = {'classname':'Button', 'port':'True'}
+    classNameList.append(className)
+    className = {'classname':'Switch', 'port':'True'}
     classNameList.append(className)
     className = {'classname':'PWMSignal', 'port':'True'}
     classNameList.append(className)

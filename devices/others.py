@@ -7,10 +7,10 @@ import requests
 
 class AUD2RMB:
     _lock = threading.RLock()
-    def __init__(self, id, title, accessible = True):
+    def __init__(self, id, title, feasible = True):
         self.id = id
         self.title = title
-        self.accessible = accessible
+        self.feasible = feasible
         self.category = 'Value'
     def description(self):
         message = {}
@@ -18,7 +18,7 @@ class AUD2RMB:
         message['title'] = self.title
         message['category'] = self.category
         message['value'] = self.getValue()
-        message['accessible'] = self.accessible
+        message['feasible'] = self.feasible
         return message
     def getValue(self):
         try:

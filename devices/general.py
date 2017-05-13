@@ -5,18 +5,18 @@ import random
 import threading
 
 class Device:
-    def __init__(self, id, title, accessible = True):
+    def __init__(self, id, title, feasible = True):
         self.id = id
         self.title = title
         self.category = 'UNIDENTIFIED'
-        self.accessible = accessible
+        self.feasible = feasible
     def description(self):
         message = {}
         message['id'] = self.id
         message['title'] = self.title
         message['category'] = self.category
         message['value'] = self.value
-        message['accessible'] = self.accessible
+        message['feasible'] = self.feasible
         return message
     def getValue(self):
         print 'Developing...'
@@ -25,10 +25,10 @@ class Device:
 
 class RandomValue:
     _lock = threading.RLock()
-    def __init__(self, id, title, accessible = True):
+    def __init__(self, id, title, feasible = True):
         self.id = id
         self.title = title
-        self.accessible = accessible
+        self.feasible = feasible
         self.category = 'Value'
     def description(self):
         message = {}
@@ -36,7 +36,7 @@ class RandomValue:
         message['title'] = self.title
         message['category'] = self.category
         message['value'] = str(self.getValue(100))
-        message['accessible'] = self.accessible
+        message['feasible'] = self.feasible
         return message
     def getValue(self, value = 100):
         with RandomValue._lock:
