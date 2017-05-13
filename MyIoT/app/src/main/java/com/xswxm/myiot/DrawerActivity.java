@@ -682,7 +682,7 @@ public class DrawerActivity extends AppCompatActivity
                                 devicePort = jsonObject.getInt("port");
                             }
                             String deviceCategory = jsonObject.getString("category");
-                            Object deviceValue = jsonObject.get("value");
+                            final Object deviceValue = jsonObject.get("value");
                             switch (deviceCategory) {
                                 case "Switch":
                                     final MySwitch mySwitch = new MySwitch(DrawerActivity.this);
@@ -690,10 +690,10 @@ public class DrawerActivity extends AppCompatActivity
                                     mySwitch.setId(deviceID);
                                     mySwitch.devicePort = devicePort;
                                     mySwitch.setPadding(0,16,0,16);
-                                    mySwitch.setChecked((boolean)deviceValue);
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            mySwitch.setChecked((boolean)deviceValue);
                                             deviceList.addView(mySwitch);
                                         }
                                     });
@@ -801,7 +801,9 @@ public class DrawerActivity extends AppCompatActivity
                                     mySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                                         @Override
                                         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                                            mySeekBar.setDeviceValue(Integer.toString(progress) + " %");
+                                            if (seekBar.isEnabled()) {
+                                                mySeekBar.setDeviceValue(Integer.toString(progress) + " %");
+                                            }
                                         }
 
                                         @Override

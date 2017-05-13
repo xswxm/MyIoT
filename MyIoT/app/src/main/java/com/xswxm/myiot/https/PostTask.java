@@ -73,7 +73,7 @@ public abstract class PostTask extends AsyncTask<Object, Object, InputStream> {
                 return null;
             }
             httpsURLConnection.setRequestMethod("HEAD");
-            httpsURLConnection.setConnectTimeout(3000); //set timeout to 3 seconds
+            httpsURLConnection.setConnectTimeout(5000); //set timeout to 5 seconds
 
             //Tell the URLConnection to use a SocketFactory from our SSLContext
             httpsURLConnection.setSSLSocketFactory(context.getSocketFactory());
