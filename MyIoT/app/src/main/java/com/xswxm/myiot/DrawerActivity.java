@@ -623,29 +623,29 @@ public class DrawerActivity extends AppCompatActivity
                         JSONObject jsonObject = (JSONObject) args[0];
                         int deviceID = jsonObject.getInt("id");
                         String deviceCategory = jsonObject.getString("category");
-                        boolean deviceAccessible = jsonObject.getBoolean("accessible");
+                        boolean deviceFeasible = jsonObject.getBoolean("feasible");
                         Object deviceValue = jsonObject.get("value");
                         Object device = deviceList.findViewById(deviceID);
                         switch (deviceCategory) {
                             case "Switch":
                                 MySwitch mySwitch = (MySwitch)device;
                                 mySwitch.setChecked((boolean)deviceValue);
-                                mySwitch.setDeviceEnabled(deviceAccessible);
+                                mySwitch.setDeviceEnabled(deviceFeasible);
                                 break;
                             case "Value":
                                 MyValue myValue = (MyValue)device;
                                 myValue.setDeviceValue((String)deviceValue);
-                                myValue.setDeviceEnabled(deviceAccessible);
+                                myValue.setDeviceEnabled(deviceFeasible);
                                 break;
                             case "SeekBar":
                                 MySeekBar mySeekBar = (MySeekBar)device;
                                 mySeekBar.setDeviceSeekBar((String)deviceValue);
                                 mySeekBar.setDeviceValue((String)deviceValue);
-                                mySeekBar.setDeviceEnabled(deviceAccessible);
+                                mySeekBar.setDeviceEnabled(deviceFeasible);
                                 break;
                             case "Button":
                                 MyButton myButton = (MyButton)device;
-                                myButton.setDeviceEnabled(deviceAccessible);
+                                myButton.setDeviceEnabled(deviceFeasible);
                                 myButton.setDeviceAnimation((boolean)deviceValue);
                                 break;
                             default:
