@@ -20,8 +20,8 @@ class PWMSignal(threading.Thread):
         try:
             self.value = self.pi.get_PWM_dutycycle(self.port)
         except:
+            self.pi.set_PWM_dutycycle(self.port, 0)
             self.value = 0
-        # self.value = self.pi.get_PWM_dutycycle(self.port)
         self.feasible = feasible
         self.category = 'SeekBar'
     def run(self):
