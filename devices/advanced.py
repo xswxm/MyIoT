@@ -17,7 +17,11 @@ class PWMSignal(threading.Thread):
         self.pi.set_PWM_frequency(self.port, 50)  # frequency 50Hz
         self.pi.set_PWM_range(self.port, 100)    # set range 100
         # Read current value of this port
-        self.value = self.pi.get_PWM_dutycycle(self.port)
+        try:
+            self.value = self.pi.get_PWM_dutycycle(self.port)
+        except:
+            self.value = 0
+        # self.value = self.pi.get_PWM_dutycycle(self.port)
         self.feasible = feasible
         self.category = 'SeekBar'
     def run(self):
