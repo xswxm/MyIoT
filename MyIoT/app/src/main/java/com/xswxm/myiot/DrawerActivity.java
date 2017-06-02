@@ -1,9 +1,11 @@
 package com.xswxm.myiot;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -200,9 +203,23 @@ public class DrawerActivity extends AppCompatActivity
 /*                intent = new Intent(this, com.xswxm.adddevice.GuideActivity.class);
                 startActivity(intent);*/
                 //finish();
-            case R.id.nav_update_cert:
-                scanQRType = Constants.SCANSERVER;
-                new QRCodeUtils().scanQRCode(this);
+            case R.id.nav_import_cert:
+                new AlertDialog.Builder(this).setTitle("Import certification").setItems(
+                        new String[]{"Read QR code from camera", "Choose QR code image"}, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.e("Selected", Integer.toString(which));
+                                if (which == 0) {
+                                    scanQRType = Constants.SCANSERVER;
+                                    new QRCodeUtils().scanQRCode(DrawerActivity.this);
+                                } else {
+                                    //Temp
+                                    String cert = "-----BEGIN CERTIFICATE-----\n" +
+                                            "-----END CERTIFICATE-----";
+                                    SpUtils.putString(DrawerActivity.this, Constants.CERT, cert);
+                                }
+                            }
+                        }).show();
                 break;
             case R.id.nav_settings:
                 intent = new Intent(this, SettingsActivity.class);
@@ -695,13 +712,13 @@ public class DrawerActivity extends AppCompatActivity
                                         public void run() {
                                             mySwitch.setChecked((boolean)deviceValue);
                                             deviceList.addView(mySwitch);
-                                        }
-                                    });
-                                    mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                        @Override
-                                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                            mySwitch.setDeviceEnabled(false);
-                                            setDevice(mySwitch.getId(), "Switch", (Object)isChecked);
+                                            mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                                @Override
+                                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                    mySwitch.setDeviceEnabled(false);
+                                                    setDevice(mySwitch.getId(), "Switch", (Object)isChecked);
+                                                }
+                                            });
                                         }
                                     });
                                     mySwitch.setOnConfigureClickListener(new View.OnClickListener() {

@@ -30,7 +30,7 @@
     <string name="nav_refresh">Refresh</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_add_device">Add device</string>
-    <string name="nav_update_cert">Update certification</string>
+    <string name="nav_import_cert">Import certification</string>
     <string name="nav_preference">Preference</string>\
     <string name="nav_about">About</string>
 
