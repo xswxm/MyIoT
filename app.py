@@ -278,7 +278,7 @@ def test_disconnect():
 
 import uuid
 tokens = []
-# tokens.append("d1e90ebd-cbbf-46b8-b77d-de25ceca7a20")
+tokens.append("d1e90ebd-cbbf-46b8-b77d-de25ceca7a20")
 #Handle a POST requst here to verify username and password and then return our token
 @app.route('/login', methods=['POST'])
 def login():
@@ -340,82 +340,27 @@ def configuration():
         else:
             return '401'
 
+class SocketIONoSSL(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+    def run(self):
+        socketio.run(app, debug=True, 
+            host="0.0.0.0", 
+            port=8800)
 
-# #Handle a POST requst from exteral devices
-# @app.route('/add', methods=['POST'])
-# def configuration():
-#     try:
-#         if ('token' in request.form):
-#             token = request.form['token']
-#             global tokens
-#             if (token in tokens):
-#                 deviceTitle = request.form['title']
-#                 deviceType = request.form['type']
-#                 deviceValue = request.form['value']
-#                 idExt += 1
-
-#                 global devices
-#                 devices.append(Device(deviceTitle, deviceType, deviceValue, idExt))
-#                 message = {}
-#                 message['title'] = deviceTitle
-#                 message['type'] = deviceType
-#                 message['value'] = deviceValue
-#                 message['id'] = idExt
-#                 emit('add', message, broadcast = True)
-#                 return str(idExt)
-#             else:
-#                 return '401'
-#         else:
-#             return '404'
-#     except Exception as e:
-#         logging.debug()
-#         return '404'
-
-# #Handle a POST requst here to write configurations
-# @app.route('/set', methods=['POST'])
-# def configuration():
-#     try:
-#         if ('token' in request.form):
-#             token = request.form['token']
-#             global tokens
-#             if (token in tokens):
-#                 deviceTitle = request.form['title']
-#                 deviceType = request.form['type']
-#                 deviceValue = request.form['value']
-#                 deviceID = int(request.form['id'])
-#                 idExt += 1
-
-#                 global devices
-#                 for i in xrange(len(devices)):
-#                     if (devices[i].id == deviceID):
-#                         if ((devices[i].title != deviceTitle) and (devices[i].value != deviceValue)):
-#                             devices[i].title = deviceTitle
-#                             devices[i].value = deviceValue
-#                             emit('set', devices[i].description(), broadcast = True)
-#                 return '200'
-#             else:
-#                 return '401'
-#         else:
-#             return '404'
-#     except Exception as e:
-#         logging.debug()
-#         return '404'
-
-
-# from flask import Response
-# @app.route("/ogg", methods=['POST'])
-# def streamogg():
-#     def generate():
-#         with open("song.ogg", "rb") as fogg:
-#             data = fogg.read(1024)
-#             while data:
-#                 yield data
-#                 data = fogg.read(1024)
-#     return Response(generate(), mimetype="audio/ogg")
-
+class SocketIOSSL(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+    def run(self):
+        socketio.run(app, debug=True, 
+            certfile='/etc/nginx/ssl/cert.pem', 
+            keyfile='/etc/nginx/ssl/key.pem', 
+            port=5000)
 
 if __name__ == '__main__':
+    socketioNoSSL = SocketIONoSSL()
+    SocketIOSSL = SocketIOSSL()
     socketio.run(app, debug=True, 
-      certfile='/etc/nginx/ssl/cert.pem', 
-      keyfile='/etc/nginx/ssl/key.pem', 
-      port=5000)
+        certfile='/etc/nginx/ssl/cert.pem', 
+        keyfile='/etc/nginx/ssl/key.pem', 
+        port=5000)

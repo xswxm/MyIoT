@@ -2,16 +2,15 @@
 # -*- encoding: utf-8 -*-
 
 import threading
-import RPi.GPIO as GPIO
-
+import pigpio
 class Button:
     def __init__(self, id, title, port, feasible = True):
         self.id = id
         self.title = title
         self.port = port
+        self.pi = pigpio.pi()
         self.feasible = feasible
         self.category = 'Button'
-        GPIO.setup(self.port, GPIO.OUT)
     def description(self):
         message = {}
         message['id'] = self.id
@@ -22,12 +21,12 @@ class Button:
         message['feasible'] = self.feasible
         return message
     def getValue(self):
-        if (GPIO.input(self.port) == 1):
+        if self.pi.read(self.port):
             return True
         else:
             return False
     def setValue(self, value):
-        GPIO.output(self.port, value)
+        self.pi.write(self.port, value)
         return value
 
 class Switch:
@@ -35,9 +34,9 @@ class Switch:
         self.id = id
         self.title = title
         self.port = port
+        self.pi = pigpio.pi()
         self.feasible = feasible
         self.category = 'Switch'
-        GPIO.setup(self.port, GPIO.OUT)
     def description(self):
         message = {}
         message['id'] = self.id
@@ -48,10 +47,10 @@ class Switch:
         message['feasible'] = self.feasible
         return message
     def getValue(self):
-        if (GPIO.input(self.port) == 1):
+        if self.pi.read(self.port):
             return True
         else:
             return False
     def setValue(self, value):
-        GPIO.output(self.port, value)
+        self.pi.write(self.port, value)
         return value

@@ -2,10 +2,10 @@
 # -*- encoding: utf-8 -*-
 
 import threading
-import sensors.dh11
+import sensors.dht11
 
 _dh11Lock = threading.RLock()
-class DH11Temp:
+class DHT11Temp:
     global _dh11Lock
     def __init__(self, id, title, port, feasible = True):
         self.id = id
@@ -24,9 +24,9 @@ class DH11Temp:
         return message
     def getValue(self):
         with _dh11Lock:
-            return str(sensors.dh11.getTemp(self.port)) + " °C"
+            return str(sensors.dht11.getTemp(self.port)) + " °C"
 
-class DH11Humidity:
+class DHT11Humidity:
     global _dh11Lock
     def __init__(self, id, title, port, feasible = True):
         self.id = id
@@ -45,4 +45,4 @@ class DH11Humidity:
         return message
     def getValue(self):
         with _dh11Lock:
-            return str(sensors.dh11.getHumidity(self.port)) + " %"
+            return str(sensors.dht11.getHumidity(self.port)) + " %"

@@ -17,11 +17,11 @@ sys.path.append("..")
 
 # Modules for devices
 from devices.general import Device, RandomValue
-from devices.system import CPUTemp, MemUse
+from devices.system import CPUTemp, CPUUse, MemUse
 from devices.basic import Button, Switch
 from devices.advanced import PWMSignal, SOSLight, BreathLight
 from devices.bh1750fvi import BH1750FVI
-from devices.dh11 import DH11Temp, DH11Humidity
+from devices.dht11 import DHT11Temp, DHT11Humidity
 from devices.others import AUD2RMB
 
 # Initialize devices
@@ -185,6 +185,8 @@ def getClassNameList():
     classNameList.append(className)
     className = {'classname':'CPUTemp', 'port':'False'}
     classNameList.append(className)
+    className = {'classname':'CPUUse', 'port':'False'}
+    classNameList.append(className)
     className = {'classname':'MemUse', 'port':'False'}
     classNameList.append(className)
     className = {'classname':'Button', 'port':'True'}
@@ -199,9 +201,9 @@ def getClassNameList():
     classNameList.append(className)
     className = {'classname':'BH1750FVI', 'port':'True'}
     classNameList.append(className)
-    className = {'classname':'DH11Temp', 'port':'True'}
+    className = {'classname':'DHT11Temp', 'port':'True'}
     classNameList.append(className)
-    className = {'classname':'DH11Humidity', 'port':'True'}
+    className = {'classname':'DHT11Humidity', 'port':'True'}
     classNameList.append(className)
     className = {'classname':'AUD2RMB', 'port':'False'}
     classNameList.append(className)
